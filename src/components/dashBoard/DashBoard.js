@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import Headers from '../common/Header';
-import SideBar from './SideBar';
 import ProductList from './ProductList';
 import PaginationBar from '../common/PaginationBar';
+import Filter from './Filter';
 
 class DashBoard extends Component {
     constructor(props) {
@@ -64,25 +64,17 @@ class DashBoard extends Component {
                 </div>
                 <div className = 'container-fluid row relative'>
                     <div className = 'col-md-3'>
-                        <div className = "card">
-                            <div className = "card-header"style = {{textAlign : 'center', color : '#232f3e'}}>
-                                <h3>Filter Products</h3>
-                            </div>
-                            <div className="card-body" style = {{backgroundColor : '#232f3e'}}>
-                                <SideBar
-                                    {...filterList}
-                                    onCollapse = {this.onCollapse}
-                                    onFilterChange = {this.onFilterChange}
-                                    openFilter = {openFilter}
-                                />
-                            </div>
-                        </div>
+                        <Filter
+                            heading = 'Filter Products'
+                            filterList = {filterList}
+                            onCollapse = {this.onCollapse}
+                            onFilterChange = {this.onFilterChange}
+                            openFilter = {openFilter}
+                        />
                     </div>
                     <div className = 'col'>
                         <ProductList products = {slicedProduct}/>
-                        <div style = {{alignContent : 'center'}}>
-                            <PaginationBar onChoosePage = {this.onChoosePage} totalPage = {totalPage}/>
-                        </div>
+                        <PaginationBar onChoosePage = {this.onChoosePage} totalPage = {totalPage}/>
                     </div>
                 </div>
             </div>
