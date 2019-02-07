@@ -12,7 +12,8 @@ class AppRoute extends Component {
         return (
             <BrowserRouter>
                 <Switch>
-                    <Route exact path='/' component={user.hasOwnProperty('email') ? DashBoard : Home}/>
+                    <Route exact path='/' component = {Home}/>
+                    <Route exact path='/dashboard' component={user.hasOwnProperty('email') ? DashBoard : Home}/>
                     <Route path='/about' component={About}/>
                     <Route path='/contact' component={Contact}/>
                 </Switch>

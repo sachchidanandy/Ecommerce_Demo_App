@@ -2,11 +2,12 @@ import React from 'react';
 import CheckBox from './CheckBox';
 
 const CollapsePannel = ({filterName, filterOptions, onChangeFilter, nameToShow}) => {
+    
     return (
         <div className = "card">
             <div className = "card-header">
                 <h4 className = "mb-0">
-                    <button class="btn btn-block" type="button" aria-expanded="true">
+                    <button  className= "btn btn-block" type="button" aria-expanded="true">
                         {nameToShow}
                     </button>
                 </h4>

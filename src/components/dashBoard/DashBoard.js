@@ -2,95 +2,19 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import Headers from '../common/Header';
 import SideBar from './SideBar';
-import ProductCard from './ProductCard';
+import ProductList from './ProductList';
 
 class DashBoard extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            user : this.props.user,
+            user : props.user,
             isOpen : false,
             brandFilter : [],
             flavourFilter : [],
             packSizeFilter : [],
-            filterList : {
-                brand:[
-                    {"name":"Dasani","logoUrl":"http://sglocalmerapi.rdnsing.com/uploads/ko/images/brands/Dasani_20181024_070034.jpg"},
-                    
-                    {"name":"A&W","logoUrl":"http://sgdev.rdnsing.com/uploads/ko/Cups.jpeg"},
-                    
-                    {"name":"Aquarius","logoUrl":"http://sgdev.rdnsing.com/uploads/ko/Aquarius.jpeg"},
-                    
-                    {"name":"Coca-Cola","logoUrl":"http://sgdev.rdnsing.com/uploads/ko/coca-cola.jpeg"},
-                    
-                    {"name":"Cups","logoUrl":"http://sgdev.rdnsing.com/uploads/ko/Cups.jpeg"},
-                    
-                    {"name":"Fanta","logoUrl":"http://sgdev.rdnsing.com/uploads/ko/fanta.jpeg"},
-                    
-                    {"name":"Heaven and Earth","logoUrl":"http://sgdev.rdnsing.com/uploads/ko/Cups.jpeg"},
-                    
-                    {"name":"Qoo","logoUrl":"http://sgdev.rdnsing.com/uploads/ko/Qoo.jpeg"},
-                    
-                    {"name":"Schweppes","logoUrl":"http://sgdev.rdnsing.com/uploads/ko/Schweppes.jpeg"},
-                    
-                    {"name":"Sprite","logoUrl":"http://sgdev.rdnsing.com/uploads/ko/sprite.jpeg"}
-                ],
-                    
-                flavour:[
-                    
-                    {"name":"Drinking Water","brand":["Dasani"]},
-                    
-                    {"name":"Tonic Water","brand":["Schweppes"]},
-                    
-                    {"name":"Ginger Ale","brand":["Schweppes"]},
-                    
-                    {"name":"Light","brand":["Coca-Cola"]},
-                    
-                    {"name":"Grapefruit","brand":["Aquarius"]},
-                    
-                    {"name":"Soda Water","brand":["Schweppes"]},
-                    
-                    {"name":"Lemon-Lime","brand":["Sprite"]},
-                    
-                    {"name":"Sarsaparilla","brand":["A&W"]},
-                    
-                    {"name":"Orange","brand":["Fanta"]},
-                    
-                    {"name":"Ayataka Green Tea","brand":["Heaven and Earth"]},
-                    
-                    {"name":"Chrysanthemum","brand":["Heaven and Earth"]},
-                    
-                    {"name":"Mango Chamomile","brand":["Heaven and Earth"]},
-                    
-                    {"name":"Ice Lemon Tea","brand":["Heaven and Earth"]},
-                    
-                    {"name":"Ice Passion Fruit","brand":["Heaven and Earth"]},
-                    
-                    {"name":"Qoo","brand":["Qoo"]},
-                    
-                    {"name":"Jasmine Green Tea","brand":["Heaven and Earth"]},
-                    
-                    {"name":"Stevia","brand":["Coca-Cola"]},
-                    
-                    {"name":"Cone cup","brand":["Cups"]},
-                    
-                    {"name":"Paper cup","brand":["Cups"]}
-                ],
-                        
-                packSize:[
-                    {"name":"4OZ","value":"118.294","brand":["Cups"],"flavour":["Cone cup"]},
-                
-                    {"name":"7OZ","value":"207.0145","brand":["Cups"],"flavour":["Paper cup"]},
-                
-                    {"name":"300ML","value":"300","brand":["Heaven and Earth","Qoo"],"flavour":["Ayataka Green Tea","Chrysanthemum","Mango Chamomile","Ice Lemon Tea","Ice Passion Fruit","Qoo","Jasmine Green Tea"]},
-                    
-                    {"name":"320ML","value":"320","brand":["Schweppes","Coca-Cola","Aquarius","Sprite","A&W","Fanta"],"flavour":["Tonic Water","Ginger Ale","Light","Grapefruit","Soda Water","Lemon-Lime","Sarsaparilla","Orange","Stevia"]},
-                    
-                    {"name":"600ML","value":"600","brand":["Dasani"],"flavour":["Drinking Water"]},
-                
-                    {"name":"1.5L","value":"1500","brand":["Dasani"],"flavour":["Drinking Water"]}
-                ]
-            }
+            productList : props.products.Products,
+            filterList : props.products.FilterList
         };
         this.onToggle = this.onToggle.bind(this);
         this.onFilterChange = this.onFilterChange.bind(this);
@@ -107,9 +31,9 @@ class DashBoard extends Component {
     }
 
     render() { 
-        const {user, isOpen, filterList} = this.state;
+        const {user, isOpen, filterList, productList} = this.state;
         return (
-            <div className = 'container-fluid'>
+            <div className = 'container-fluid' style = {{backgroundColor: '#e6f0f6'}}>
                 <div className = 'container-fluid sticky'>
                     <Headers
                         validUser = {user}
@@ -125,16 +49,14 @@ class DashBoard extends Component {
                             </div>
                             <div className="card-body" style = {{backgroundColor : '#232f3e'}}>
                                 <SideBar
-                                    brand = {filterList.brand}
-                                    flavour = {filterList.flavour}
-                                    packSize = {filterList.packSize}
+                                    {...filterList}
                                     onFilterChange = {this.onFilterChange}
-                                />
+                                />}
                             </div>
                         </div>
                     </div>
                     <div className = 'col'>
-                        <ProductCard/>
+                        <ProductList products = {productList}/>
                     </div>
                 </div>
             </div>
@@ -143,8 +65,10 @@ class DashBoard extends Component {
 }
  
 function mapStateToProps(state) {
+    debugger;
     return {
-        user: state.user
+        user: state.user,
+        products : state.products
     };
 }
 export default connect(mapStateToProps)(DashBoard);

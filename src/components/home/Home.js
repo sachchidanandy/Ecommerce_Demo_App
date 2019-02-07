@@ -3,6 +3,7 @@ import Header from '../common/Header';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as userAction from '../../actions/userAction';
+import * as productAction from '../../actions/productsAction';
 import LoginForm from './LoginForm';
 import RegistrationForm from './Registration';
 import { Input } from 'reactstrap';
@@ -46,10 +47,12 @@ class Home extends Component {
     }
 
     onLogin(event) {
+        console.log(this.props);
+
         event.preventDefault();
         this.setState({loginApiProgress : true});
-        this.props.actions.loginUser(this.state.user)
-        .then (() => this.props.history.push('/'))
+        this.props.userActions.loginUser(this.state.user)
+        .then (() => this.props.history.push('/dashboard'))
         .catch(error => {throw(error)});
     }
 
@@ -57,7 +60,8 @@ class Home extends Component {
         event.preventDefault();
         this.setState({registerApiProgress : true});
         this.props.actions.registerUser(this.state.registerUser)
-        .then (() => this.props.history.push('/'))
+        .then (() => this.props.productActions.fetchProducts())
+        .then (() => this.props.history.push('/dashboard'))
         .catch(error => {throw(error)});
     }
 
@@ -130,7 +134,8 @@ function mapStateToProps(state) {
 
 function mapActionsToProps (dispatch) {
     return {
-        actions : bindActionCreators(userAction, dispatch)
+        userActions : bindActionCreators(userAction, dispatch),
+        productActions : bindActionCreators(productAction, dispatch)
     };
 }
 

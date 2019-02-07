@@ -1,13 +1,13 @@
 import React from 'react';
 
-const ProductCard = () => {
+const ProductCard = ({name, thumbnailURL, price, offerIDs}) => {
     return (
-        <div className = "card" style={{width: '200px', height: '170px'}}>
-            <img class="card-img-top" src="http://www.coca-cola.ie/content/dam/journey/gb/en/hidden/Products/lead-brand-image/coca-cola-original-taste-gb-lead-598x336.jpg" alt="Card image cap" style={{height: '100px'}}/>
+        <div className = "card" style={{width: '200px', margin : '8px'}}>
+            <img  className= "card-img-top" src={thumbnailURL} alt="Card Pic cap" style={{height: '100px', padding : '8px'}}/>
             <div className="card-body">
-                <h6 class="card-subtitle mb-2 text-muted">Product Name</h6>
-                <h5 class="card-title">Product Price</h5>
-                <p class="card-text"></p>
+                <h6  className= "card-subtitle mb-2 text-muted">{name}</h6>
+                <h5  className= "card-title">Rs. {price}</h5>
+                <span  className= "card-text" style={{color: 'red '}}>{'OFFERS : ' + offerIDs.length}</span>
             </div>
         </div>
     );

@@ -2,6 +2,7 @@ import React from 'react';
 import CollapsePannel from '../common/CollapsePannel';
 
 const SideBar = ({brand, flavour, packSize, onFilterChange}) => {
+    
     return (
         <div>
             <CollapsePannel
