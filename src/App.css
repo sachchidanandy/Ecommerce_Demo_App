@@ -26,6 +26,14 @@
   border-radius: 50%;
 }
 
+.collapse {
+  display: none
+}
+
+.collapseOff {
+  display: block
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

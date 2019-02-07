@@ -1,15 +1,16 @@
 import React from 'react';
 import CollapsePannel from '../common/CollapsePannel';
 
-const SideBar = ({brand, flavour, packSize, onFilterChange}) => {
-    
+const SideBar = ({brand, flavour, packSize, onFilterChange, onCollapse, openFilter}) => {
     return (
         <div>
             <CollapsePannel
-                filterName = 'brands'
+                filterName = 'brand'
                 filterOptions = {brand}
                 onChangeFilter = {onFilterChange}
                 nameToShow = 'Brands'
+                onCollapse = {onCollapse}
+                openFilter = {openFilter}
             />
             <br/>
             <CollapsePannel
@@ -17,6 +18,8 @@ const SideBar = ({brand, flavour, packSize, onFilterChange}) => {
                 filterOptions = {flavour}
                 onChangeFilter = {onFilterChange}
                 nameToShow = 'Flavours'
+                onCollapse = {onCollapse}
+                openFilter = {openFilter}
             />
             <br/>
             <CollapsePannel
@@ -24,6 +27,8 @@ const SideBar = ({brand, flavour, packSize, onFilterChange}) => {
                 filterOptions = {packSize}
                 onChangeFilter = {onFilterChange}
                 nameToShow = 'Package Size'
+                onCollapse = {onCollapse}
+                openFilter = {openFilter}
             />
         </div>
     );
