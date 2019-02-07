@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import Headers from '../common/Header';
 import SideBar from './SideBar';
 import ProductList from './ProductList';
+import PaginationBar from '../common/PaginationBar';
 
 class DashBoard extends Component {
     constructor(props) {
@@ -15,11 +16,14 @@ class DashBoard extends Component {
             flavourFilter : [],
             packSizeFilter : [],
             productList : props.products.Products,
-            filterList : props.products.FilterList
+            filterList : props.products.FilterList,
+            currentPage : 1,
+            productPerPage : 9
         };
         this.onToggle = this.onToggle.bind(this);
         this.onFilterChange = this.onFilterChange.bind(this);
         this.onCollapse = this.onCollapse.bind(this);
+        this.onChoosePage = this.onChoosePage.bind(this);
     }
     
     onToggle() {
@@ -34,14 +38,23 @@ class DashBoard extends Component {
         this.setState({openFilter});
     }
 
+    onChoosePage(event) {
+        debugger;
+        this.setState({currentPage : event.target.value});
+    }
     onFilterChange (event) {
 
     }
 
     render() { 
-        const {user, isOpen, filterList, productList, openFilter } = this.state;
+        const {user, isOpen, filterList, productList, openFilter, currentPage, productPerPage } = this.state;
+        //Logic To show Products
+        const indexOfLastProduct = currentPage * productPerPage;
+        const indexOfFirstProduct = indexOfLastProduct - productPerPage;
+        const slicedProduct = productList.slice(indexOfFirstProduct, indexOfLastProduct);
+        const totalPage = Math.ceil(productList.length / productPerPage);
         return (
-            <div className = 'container-fluid' style = {{backgroundColor: '#e6f0f6'}}>
+            <div className = 'container-fluid'>
                 <div className = 'container-fluid sticky'>
                     <Headers
                         validUser = {user}
@@ -66,7 +79,10 @@ class DashBoard extends Component {
                         </div>
                     </div>
                     <div className = 'col'>
-                        <ProductList products = {productList}/>
+                        <ProductList products = {slicedProduct}/>
+                        <div style = {{alignContent : 'center'}}>
+                            <PaginationBar onChoosePage = {this.onChoosePage} totalPage = {totalPage}/>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -75,7 +91,6 @@ class DashBoard extends Component {
 }
  
 function mapStateToProps(state) {
-    debugger;
     return {
         user: state.user,
         products : state.products
