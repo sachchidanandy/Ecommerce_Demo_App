@@ -11,7 +11,7 @@ function registerUserSuccess (user) {
 
 export function loginUser(user) {
     return function (dispatch) {
-        UserAPI.login(user).then ((user) => {
+        return UserAPI.login(user).then (user => {
             dispatch(loginUserSuccess(user));
         }).catch ((error) => {
             throw error;
@@ -21,7 +21,7 @@ export function loginUser(user) {
 
 export function registerUser(user) {
     return function (dispatch) {
-        UserAPI.saveUser(user).then ((user) => {
+        return UserAPI.saveUser(user).then (user => {
             dispatch(registerUserSuccess(user));
         }).catch ((error) => {
             throw error;

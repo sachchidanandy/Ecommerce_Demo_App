@@ -13,36 +13,52 @@ class Home extends Component {
         this.state ={
             user : {
                 email : '',
+                password : ''
+            },
+            registerUser : {
+                email : '',
                 password : '',
                 firstName : '',
                 middleName : '',
                 lastName : ''
             },
-            apiCallInProcess : false,
+            loginApiProgress : false,
+            registerApiProgress : false,
             showLogin :true
         };
-        this.onChangeForm = this.onChangeForm.bind(this);
+        this.onLoginChangeForm = this.onLoginChangeForm.bind(this);
+        this.onRegisterChangeForm = this.onRegisterChangeForm.bind(this);
         this.onLogin = this.onLogin.bind(this);
         this.onRegister = this.onRegister.bind(this);
         this.toogle = this.toogle.bind(this);
     }
 
-    onChangeForm(event) {
+    onLoginChangeForm(event) {
         const user = Object.assign({}, this.state.user);
         user[event.target.name] = event.target.value;
         this.setState({user : user});
     }
 
+    onRegisterChangeForm(event) {
+        const registerUser = Object.assign({}, this.state.registerUser);
+        registerUser[event.target.name] = event.target.value;
+        this.setState({registerUser : registerUser});
+    }
+
     onLogin(event) {
         event.preventDefault();
-        this.setState({apiCallInProcess : true});
-        this.props.actions.loginUser(this.state.user);
+        this.setState({loginApiProgress : true});
+        this.props.actions.loginUser(this.state.user)
+        .then (() => this.props.history.push('/'))
+        .catch(error => {throw(error)});
     }
 
     onRegister(event) {
         event.preventDefault();
-        this.setState({apiCallInProcess : true});
-        this.props.actions.registerUser(this.state.user);
+        this.setState({registerApiProgress : true});
+        this.props.actions.registerUser(this.state.registerUser)
+        .then (() => this.props.history.push('/'))
+        .catch(error => {throw(error)});
     }
 
     toogle() {
@@ -50,38 +66,46 @@ class Home extends Component {
     }
 
     render() {
-        const {user, apiCallInProcess, showLogin } = this.state;
+        const {user, loginApiProgress, showLogin, registerUser, registerApiProgress } = this.state;
         return (
             <div className = 'container-fluid'>
-                <Header/>
-                <div className = 'row'>
-                    <div className = 'col-lg-7 System align-self-start'>
-                        <img src = 'assets/images/homePic.jpg' alt = 'Shoping' style = {{}}/>
+                <div className = 'container-fluid sticky'>
+                    <Header
+                        validUser = {this.props.user}
+                        user = {user}
+                        onFormChange = {this.onLoginChangeForm}
+                        apiCallInProcess = {loginApiProgress}
+                        login = {this.onLogin}
+                    />
+                </div>
+                <div className = 'container-fluid row relative'>
+                    <div className = 'col-lg-7 System align-self-center'>
+                        <img src = 'assets/images/homePic.jpg' alt = 'Shoping'/>
                     </div>
                     <div className = 'col-lg-4 Tablet align-self-center FormDiv'>
                         <div style ={{padding : 10}}>
                             <h3 style ={{padding : 10}}>Don't Have Account..?</h3>
                             <h4 style ={{padding : 10}}>Create It Not !!</h4>
                             <RegistrationForm
-                                user = {user} 
-                                onChange = {this.onChangeForm} 
+                                user = {registerUser} 
+                                onChange = {this.onRegisterChangeForm} 
                                 onRegister = {this.onRegister} 
-                                apiCallInProcess = {apiCallInProcess}
+                                apiCallInProcess = {registerApiProgress}
                             />
                         </div>
                     </div>
-                    <div className = 'col-sm-9 Mobile align-self-center'>
+                    <div className = 'col-sm-11 Mobile align-self-center'>
                         {
                             showLogin ? <LoginForm 
                             user = {user} 
-                            onChange = {this.onChangeForm} 
+                            onChange = {this.onLoginChangeForm} 
                             onLogin = {this.onLogin} 
-                            apiCallInProcess = {apiCallInProcess}
+                            apiCallInProcess = {loginApiProgress}
                             /> :  <RegistrationForm
-                            user = {user} 
-                            onChange = {this.onChangeForm} 
+                            user = {registerUser} 
+                            onChange = {this.onRegisterChangeForm} 
                             onRegister = {this.onRegister} 
-                            apiCallInProcess = {apiCallInProcess}
+                            apiCallInProcess = {registerApiProgress}
                             />
                         }
                         <br/>
@@ -98,14 +122,16 @@ class Home extends Component {
     }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
     return {
-      props :state.user
+        user: state.user
     };
 }
+
 function mapActionsToProps (dispatch) {
     return {
         actions : bindActionCreators(userAction, dispatch)
     };
 }
+
 export default connect(mapStateToProps,mapActionsToProps)(Home);
