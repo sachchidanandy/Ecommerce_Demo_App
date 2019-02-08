@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import Headers from '../common/Header';
-import ProductList from './ProductList';
+import ProductList from '../common/ProductList';
 import PaginationBar from '../common/PaginationBar';
 import Filter from './Filter';
 import  { Redirect } from 'react-router-dom';
@@ -41,9 +41,9 @@ class DashBoard extends Component {
     }
 
     onChoosePage(event) {
-        debugger;
         this.setState({currentPage : event.target.value});
     }
+
     onFilterChange (event) {
 
     }

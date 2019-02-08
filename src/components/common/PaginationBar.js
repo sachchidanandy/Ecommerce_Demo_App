@@ -2,10 +2,7 @@ import React from 'react';
 import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 
 const PaginationBar = ({onChoosePage, totalPage}) => {
-    const pageNumbers = [];
-    for (let i = 1; i <= totalPage; i++) {
-      pageNumbers.push(i);
-    }
+    const pageNumbers = [...Array(totalPage)].map((val, key) => key+1);
 
     function pageNumber(value) {
        return( 

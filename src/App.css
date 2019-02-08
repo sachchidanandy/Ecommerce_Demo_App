@@ -4,7 +4,8 @@ html, body {
   padding: 0;
   height: 100%;
   overflow: auto;
- background-image: linear-gradient(137deg, #D0BAFF 0%, #AD8BF6 27%, #AA88FE 52%, #B77BF6 73%, #D7AAEB 100%);
+  background: #AFEEEE;
+  /*background-image: linear-gradient(137deg, #D0BAFF 0%, #AD8BF6 27%, #AA88FE 52%, #B77BF6 73%, #D7AAEB 100%);*/
 }
 
 .sticky {
