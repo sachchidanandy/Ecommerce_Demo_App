@@ -4,10 +4,12 @@ import Headers from '../common/Header';
 import ProductList from './ProductList';
 import PaginationBar from '../common/PaginationBar';
 import Filter from './Filter';
+import  { Redirect } from 'react-router-dom';
 
 class DashBoard extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             user : props.user,
             openFilter : {brand : false, flavour : false, packSize : false },
@@ -47,6 +49,9 @@ class DashBoard extends Component {
     }
 
     render() { 
+        if (! this.props.user.hasOwnProperty('email')) {
+            return <Redirect to='/' />;
+        }
         const {user, isOpen, filterList, productList, openFilter, currentPage, productPerPage } = this.state;
         //Logic To show Products
         const indexOfLastProduct = currentPage * productPerPage;

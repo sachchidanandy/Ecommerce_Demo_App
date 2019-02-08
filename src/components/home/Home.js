@@ -7,6 +7,7 @@ import * as productAction from '../../actions/productsAction';
 import LoginForm from './LoginForm';
 import RegistrationForm from './Registration';
 import { Input } from 'reactstrap';
+import  { Redirect } from 'react-router-dom';
 
 class Home extends Component {
     constructor (props) {
@@ -47,11 +48,10 @@ class Home extends Component {
     }
 
     onLogin(event) {
-        console.log(this.props);
-
         event.preventDefault();
         this.setState({loginApiProgress : true});
         this.props.userActions.loginUser(this.state.user)
+        .then (() => this.props.productActions.fetchProducts())
         .then (() => this.props.history.push('/dashboard'))
         .catch(error => {throw(error)});
     }
@@ -70,6 +70,9 @@ class Home extends Component {
     }
 
     render() {
+        if (this.props.user.hasOwnProperty('email') && this.props.products.hasOwnProperty('Products')) {
+            return <Redirect to = '/dashboard'/>;
+        }
         const {user, loginApiProgress, showLogin, registerUser, registerApiProgress } = this.state;
         return (
             <div className = 'container-fluid'>
@@ -128,7 +131,8 @@ class Home extends Component {
 
 function mapStateToProps(state) {
     return {
-        user: state.user
+        user: state.user,
+        products : state.products
     };
 }
 
