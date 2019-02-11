@@ -5,6 +5,7 @@ import About from './components/about/About';
 import Contact from './components/contact/Contact';
 import DashBoard from './components/dashBoard/DashBoard';
 import ViewProduct from './components/product/ViewProduct';
+import Cart from './components/cart/Cart';
 
 class AppRoute extends Component {
     render () {
@@ -14,6 +15,7 @@ class AppRoute extends Component {
                     <Route exact path='/' component = {Home}/>
                     <Route exact path='/dashboard' component={DashBoard}/>
                     <Route exact path='/viewProduct/:id' component={ViewProduct}/>
+                    <Route exact path='/cart' component={Cart}/>
                     <Route path='/about' component={About}/>
                     <Route path='/contact' component={Contact}/>
                 </Switch>

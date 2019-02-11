@@ -29,6 +29,7 @@ class DashBoard extends Component {
         this.onNextOrPrevPage = this.onNextOrPrevPage.bind(this);
     }
     
+    //Handle the toogle during mobile view
     onToggle() {
         this.setState({
           isOpen: !this.state.isOpen

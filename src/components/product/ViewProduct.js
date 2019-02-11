@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import Headers  from '../common/Header';
-import ProductDescription from './ProductDescription';
+import ProductDescription from './ProductDetails';
 import ProductList from '../common/ProductList';
 import { bindActionCreators } from 'redux';
 import * as UserAction from '../../actions/userAction';
@@ -19,6 +19,14 @@ class ViewProduct extends Component {
         this.changeQuantity = this.changeQuantity.bind(this);
         this.changeQuantityButton = this.changeQuantityButton.bind(this);
         this.addToCart = this.addToCart.bind(this);
+        this.onToggle = this.onToggle.bind(this);
+    }
+
+    //Handle the toogle during mobile view
+    onToggle() {
+        this.setState((prevState) => ({
+          isOpen: !prevState.isOpen
+        }));
     }
 
     //Handle change by Input Field
