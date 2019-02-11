@@ -13,7 +13,8 @@ class ViewProduct extends Component {
         super(props);
         this.state = { 
             isOpen : false,
-            quantity : 1
+            quantity : 1,
+            ApiCallInProgress : false
         }
         this.changeQuantity = this.changeQuantity.bind(this);
         this.changeQuantityButton = this.changeQuantityButton.bind(this);
@@ -38,13 +39,16 @@ class ViewProduct extends Component {
 
     //Add Products to cart
     addToCart() {
+        this.setState ({ApiCallInProgress : true});
+
         this.props.UserAction.addToCart(this.props.user.id,
             {product : this.props.product, quantity : this.state.quantity}
         ).then ( () => {
             toastr.success('Product Added To Cart');
-            this.setState({quantity : 1})
+            this.setState({quantity : 1, ApiCallInProgress : false});
         }).catch ((error) => {
             toastr.error(error);
+            this.setState({quantity : 1, ApiCallInProgress : false});
         });
     }
 
@@ -53,7 +57,7 @@ class ViewProduct extends Component {
             return <Redirect to='/' />;
         }
         const {user, product, similarProducts} = this.props;
-        const {isOpen, quantity} = this.state;
+        const {isOpen, quantity, ApiCallInProgress} = this.state;
         return (
             <div className = 'container-fluid'>
                 <div className = 'container-fluid sticky'>
@@ -74,6 +78,7 @@ class ViewProduct extends Component {
                             changeQuantity = {this.changeQuantity} 
                             changeQuantityButton = {this.changeQuantityButton}
                             addToCart = {this.addToCart}
+                            ApiCallInProgress = {ApiCallInProgress}
                         />
                     </div>
                     <div className = 'col-sm-11' style = {{padding : '20px', margin : '20px'}}>

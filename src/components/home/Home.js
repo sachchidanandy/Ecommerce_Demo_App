@@ -8,6 +8,7 @@ import LoginForm from './LoginForm';
 import RegistrationForm from './Registration';
 import { Input } from 'reactstrap';
 import  { Redirect } from 'react-router-dom';
+import toastr from'toastr';
 
 class Home extends Component {
     constructor (props) {
@@ -24,8 +25,8 @@ class Home extends Component {
                 middleName : '',
                 lastName : ''
             },
-            loginApiProgress : false,
-            registerApiProgress : false,
+            loginInProcess : false,
+            registrationInProcess : false,
             showLogin :true
         };
         this.onLoginChangeForm = this.onLoginChangeForm.bind(this);
@@ -49,20 +50,41 @@ class Home extends Component {
 
     onLogin(event) {
         event.preventDefault();
-        this.setState({loginApiProgress : true});
+        this.setState({loginInProcess : true});
         this.props.userActions.loginUser(this.state.user)
         .then (() => this.props.productActions.fetchProducts())
         .then (() => this.props.history.push('/dashboard'))
-        .catch(error => {throw(error)});
+        .catch(error => {
+            toastr.error(error);
+            this.setState({
+                loginInProcess : false,
+                user : {
+                    email : '',
+                    password : ''
+                }
+            });
+        });
     }
 
     onRegister(event) {
         event.preventDefault();
-        this.setState({registerApiProgress : true});
-        this.props.actions.registerUser(this.state.registerUser)
+        this.setState({registrationInProcess : true});
+        this.props.userActions.registerUser(this.state.registerUser)
         .then (() => this.props.productActions.fetchProducts())
         .then (() => this.props.history.push('/dashboard'))
-        .catch(error => {throw(error)});
+        .catch(error => {
+            toastr.error(error);
+            this.setState({
+                registrationInProcess : false,
+                registerUser : {
+                    email : '',
+                    password : '',
+                    firstName : '',
+                    middleName : '',
+                    lastName : ''
+                }
+            });
+        });
     }
 
     toogle() {
@@ -73,7 +95,7 @@ class Home extends Component {
         if (this.props.user.hasOwnProperty('email') && this.props.products.hasOwnProperty('Products')) {
             return <Redirect to = '/dashboard'/>;
         }
-        const {user, loginApiProgress, showLogin, registerUser, registerApiProgress } = this.state;
+        const {user, registrationInProcess, showLogin, registerUser, loginInProcess } = this.state;
         return (
             <div className = 'container-fluid'>
                 <div className = 'container-fluid sticky'>
@@ -81,7 +103,7 @@ class Home extends Component {
                         validUser = {this.props.user}
                         user = {user}
                         onFormChange = {this.onLoginChangeForm}
-                        apiCallInProcess = {loginApiProgress}
+                        apiCallInProcess = {loginInProcess}
                         login = {this.onLogin}
                     />
                 </div>
@@ -97,7 +119,7 @@ class Home extends Component {
                                 user = {registerUser} 
                                 onChange = {this.onRegisterChangeForm} 
                                 onRegister = {this.onRegister} 
-                                apiCallInProcess = {registerApiProgress}
+                                apiCallInProcess = {registrationInProcess}
                             />
                         </div>
                     </div>
@@ -107,12 +129,12 @@ class Home extends Component {
                             user = {user} 
                             onChange = {this.onLoginChangeForm} 
                             onLogin = {this.onLogin} 
-                            apiCallInProcess = {loginApiProgress}
+                            apiCallInProcess = {loginInProcess}
                             /> :  <RegistrationForm
                             user = {registerUser} 
                             onChange = {this.onRegisterChangeForm} 
                             onRegister = {this.onRegister} 
-                            apiCallInProcess = {registerApiProgress}
+                            apiCallInProcess = {registrationInProcess}
                             />
                         }
                         <br/>

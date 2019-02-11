@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ProductDescription = ({name,brand, price, description, flavour, packSize, quantity, changeQuantity, changeQuantityButton, addToCart}) => {
+const ProductDescription = ({name,brand, price, description, flavour, packSize, quantity, changeQuantity, changeQuantityButton, addToCart, ApiCallInProgress}) => {
     return (
         <React.Fragment>
             <h2>
@@ -38,8 +38,9 @@ const ProductDescription = ({name,brand, price, description, flavour, packSize, 
                             <button 
                                 style= {{ padding : '5px',margin : '10px', maxWidth : '100%'}}
                                 className = 'btn btn-block btn-primary' 
-                                onClick = {addToCart}> Add to Cart
-                            </button>
+                                onClick = {addToCart}
+                                disabled  = {ApiCallInProgress}
+                            >{ApiCallInProgress ? 'Adding...' : 'Add to Cart'}</button>
                         </td>
                     </tr>
                 </tbody>
