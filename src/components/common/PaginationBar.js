@@ -1,7 +1,7 @@
 import React from 'react';
 import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 
-const PaginationBar = ({onChoosePage, totalPage}) => {
+const PaginationBar = ({onChoosePage, totalPage, onNextOrPrevPage}) => {
     const pageNumbers = [...Array(totalPage)].map((val, key) => key+1);
 
     function pageNumber(value) {
@@ -14,11 +14,11 @@ const PaginationBar = ({onChoosePage, totalPage}) => {
     return (
         <Pagination aria-label="Page navigation example">
             <PaginationItem>
-                <PaginationLink previous href="#" />
+                <PaginationLink previous onClick = {onNextOrPrevPage} value = 'previous'/>
             </PaginationItem>
             { pageNumbers.map ( value => pageNumber(value))}
             <PaginationItem>
-                <PaginationLink next href="#" />
+                <PaginationLink next onClick = {onNextOrPrevPage} value = 'next' />
             </PaginationItem>
         </Pagination>
     );

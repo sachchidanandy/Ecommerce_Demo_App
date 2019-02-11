@@ -6,6 +6,9 @@ export default function userReducer (state = initialState.user, action) {
         case ActionType.LOGIN_USER :
             return  action.user;
 
+        case ActionType.ADD_TO_CART : 
+            return action.user;
+
         default:
             return state;
     }

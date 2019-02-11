@@ -26,6 +26,7 @@ class DashBoard extends Component {
         this.onFilterChange = this.onFilterChange.bind(this);
         this.onCollapse = this.onCollapse.bind(this);
         this.onChoosePage = this.onChoosePage.bind(this);
+        this.onNextOrPrevPage = this.onNextOrPrevPage.bind(this);
     }
     
     onToggle() {
@@ -34,14 +35,27 @@ class DashBoard extends Component {
         });
     }
 
+    //Handle collapse filter
     onCollapse(event) {
         const openFilter = Object.assign({}, this.state.openFilter);
         openFilter[event.target.name] =  !this.state.openFilter[event.target.name];
         this.setState({openFilter});
     }
 
+    //To handle choose page in the pagination
     onChoosePage(event) {
         this.setState({currentPage : event.target.value});
+    }
+
+    //To handle page change using next or prev button in pagination
+    onNextOrPrevPage(event) {
+        const totalPage = Math.ceil(this.state.productList.length / this.state.productPerPage);
+        
+        if (event.target.value === 'previous' && this.state.currentPage > 1) {
+            this.setState((prevState) => ({currentPage : prevState.currentPage - 1}));
+        } else if (event.target.value === 'next' && this.state.currentPage < totalPage) {
+            this.setState((prevState) => ({currentPage : prevState.currentPage + 1}));
+        }
     }
 
     onFilterChange (event) {
@@ -49,7 +63,7 @@ class DashBoard extends Component {
     }
 
     render() { 
-        if (! this.props.user.hasOwnProperty('email')) {
+        if (! this.props.user.hasOwnProperty('email') || !this.props.products.hasOwnProperty('Products')) {
             return <Redirect to='/' />;
         }
         const {user, isOpen, filterList, productList, openFilter, currentPage, productPerPage } = this.state;
@@ -79,7 +93,7 @@ class DashBoard extends Component {
                     </div>
                     <div className = 'col'>
                         <ProductList products = {slicedProduct}/>
-                        <PaginationBar onChoosePage = {this.onChoosePage} totalPage = {totalPage}/>
+                        <PaginationBar onNextOrPrevPage = {this.onNextOrPrevPage} onChoosePage = {this.onChoosePage} totalPage = {totalPage}/>
                     </div>
                 </div>
             </div>

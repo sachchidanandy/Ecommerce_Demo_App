@@ -4,29 +4,56 @@ import { Redirect } from 'react-router-dom';
 import Headers  from '../common/Header';
 import ProductDescription from './ProductDescription';
 import ProductList from '../common/ProductList';
+import { bindActionCreators } from 'redux';
+import * as UserAction from '../../actions/userAction';
+import toastr from'toastr';
 
 class ViewProduct extends Component {
     constructor(props) {
         super(props);
         this.state = { 
             isOpen : false,
-            slicedProduct : [
-                {"sku":"102838","name":"Dasani 600ml (non-AS)","price":"10.10","rrpCasePrice":"10.10","imageURLLarge":"http://www.coca-cola.ie/content/dam/journey/gb/en/hidden/Products/lead-brand-image/coca-cola-original-taste-gb-lead-598x336.jpg","thumbnailURL":"http://www.coca-cola.ie/content/dam/journey/gb/en/hidden/Products/lead-brand-image/coca-cola-original-taste-gb-lead-598x336.jpg","description":"Dasani 600ml (non-AS)","pack":" 24s","brand":"Dasani","displayPriority":1,"brandLogo":"http://sglocalmerapi.rdnsing.com/uploads/ko/images/brands/Dasani_20181024_070034.jpg","flavour":"Drinking Water","packType":"DRINKING WATER","packSize":"600ML","packSizeValue":600,"rcpCasePrice":"0","countFlag":false,"isTaxable":true,"isCupRule":false,"offerIDs":""},
+            quantity : 1
+        }
+        this.changeQuantity = this.changeQuantity.bind(this);
+        this.changeQuantityButton = this.changeQuantityButton.bind(this);
+        this.addToCart = this.addToCart.bind(this);
+    }
 
-                {"sku":"106254","name":"Dasani 1.5L (AS & WS)","price":"10.10","rrpCasePrice":"10.10","imageURLLarge":"http://www.coca-cola.ie/content/dam/journey/gb/en/hidden/Products/lead-brand-image/coca-cola-original-taste-gb-lead-598x336.jpg","thumbnailURL":"http://www.coca-cola.ie/content/dam/journey/gb/en/hidden/Products/lead-brand-image/coca-cola-original-taste-gb-lead-598x336.jpg","description":"Dasani 1.5L (AS & WS)","pack":" 12s","brand":"Dasani","displayPriority":1,"brandLogo":"http://sglocalmerapi.rdnsing.com/uploads/ko/images/brands/Dasani_20181024_070034.jpg","flavour":"Drinking Water","packType":"DRINKING WATER","packSize":"1.5L","packSizeValue":1500,"rcpCasePrice":"0","countFlag":false,"isTaxable":true,"isCupRule":false,"offerIDs":""},
-                
-                {"sku":"106752","name":"Schwep Tonic slab 12's Clear 320ml","price":"10.10","rrpCasePrice":"10.10","imageURLLarge":"http://www.coca-cola.ie/content/dam/journey/gb/en/hidden/Products/lead-brand-image/coca-cola-original-taste-gb-lead-598x336.jpg","thumbnailURL":"http://www.coca-cola.ie/content/dam/journey/gb/en/hidden/Products/lead-brand-image/coca-cola-original-taste-gb-lead-598x336.jpg","description":"Schwep Tonic slab 12's Clear 320ml","pack":" 12s","brand":"Schweppes","displayPriority":null,"brandLogo":"http://sgdev.rdnsing.com/uploads/ko/Schweppes.jpeg","flavour":"Tonic Water","packType":"CAN SLAB (SLEEK CAN)","packSize":"320ML","packSizeValue":320,"rcpCasePrice":"0","countFlag":false,"isTaxable":true,"isCupRule":false,"offerIDs":""},
-                
-                {"sku":"106755","name":"Schwep Ginger Ale slab 12's Clear 320ml","price":"10.10","rrpCasePrice":"10.10","imageURLLarge":"http://www.coca-cola.ie/content/dam/journey/gb/en/hidden/Products/lead-brand-image/coca-cola-original-taste-gb-lead-598x336.jpg","thumbnailURL":"http://www.coca-cola.ie/content/dam/journey/gb/en/hidden/Products/lead-brand-image/coca-cola-original-taste-gb-lead-598x336.jpg","description":"Schwep Ginger Ale slab 12's Clear 320ml","pack":" 12s","brand":"Schweppes","displayPriority":null,"brandLogo":"http://sgdev.rdnsing.com/uploads/ko/Schweppes.jpeg","flavour":"Ginger Ale","packType":"CAN SLAB (SLEEK CAN)","packSize":"320ML","packSizeValue":320,"rcpCasePrice":"0","countFlag":false,"isTaxable":true,"isCupRule":true,"offerIDs":""},
-            ]
+    //Handle change by Input Field
+    changeQuantity(event) {
+        if (event.target.value > 0) {
+            this.setState({quantity : event.target.value});
         }
     }
+
+    //Handle change in quantity by button
+    changeQuantityButton(event) {
+        if (event.target.name === '+') {
+            this.setState( prevState => ({quantity : prevState.quantity + 1}));
+        } else {
+            this.state.quantity > 1 && this.setState( prevState => ({quantity : prevState.quantity - 1}));
+        }
+    }
+
+    //Add Products to cart
+    addToCart() {
+        this.props.UserAction.addToCart(this.props.user.id,
+            {product : this.props.product, quantity : this.state.quantity}
+        ).then ( () => {
+            toastr.success('Product Added To Cart');
+            this.setState({quantity : 1})
+        }).catch ((error) => {
+            toastr.error(error);
+        });
+    }
+
     render() { 
-        if (! this.props.user.hasOwnProperty('email')) {
+        if (!this.props.user.hasOwnProperty('email')) {
             return <Redirect to='/' />;
         }
-        const {user, product} = this.props;
-        const {isOpen, slicedProduct} = this.state;
+        const {user, product, similarProducts} = this.props;
+        const {isOpen, quantity} = this.state;
         return (
             <div className = 'container-fluid'>
                 <div className = 'container-fluid sticky'>
@@ -38,14 +65,20 @@ class ViewProduct extends Component {
                 </div>
                 <div className = 'container-fluid row relative'>
                     <div className = 'col-sm-11 col-md-5'>
-                        <img src = {product.imageURLLarge} style = {{maxWidth : '100%'}}/>
+                        <img src = {product.imageURLLarge} alt = 'Wait...' style = {{maxWidth : '100%'}}/>
                     </div>
                     <div className = 'col-sm-11 col-md-6'  style = {{borderRadius : '15px', border : '2px solid black', padding : '20px', backgroundColor : '#fcfcf7'}}>
-                        <ProductDescription {...product}/>
+                        <ProductDescription 
+                            {...product}
+                            quantity = {quantity} 
+                            changeQuantity = {this.changeQuantity} 
+                            changeQuantityButton = {this.changeQuantityButton}
+                            addToCart = {this.addToCart}
+                        />
                     </div>
                     <div className = 'col-sm-11' style = {{padding : '20px', margin : '20px'}}>
                         <span style = {{color : '#535456', fontWeight : 'bold', fontSize : '1.15em'}}>Similar Products :</span>
-                        <ProductList products = {slicedProduct} showMore = {true}/>
+                        <ProductList products = {similarProducts} showMore = {true}/>
                     </div>
                 </div>
             </div>
@@ -53,28 +86,41 @@ class ViewProduct extends Component {
     }
 }
 
+//Fetch the selected product
 function getProductBySku (products, selectedProductSku) {
-    const product = products.filter( product => product.sku == selectedProductSku);
+    const product = products.filter( product => product.sku === selectedProductSku);
     return product[0];
 }
 
+//Fetch  simila products using state
+function getSimilarProduct (products, brand) {
+    const similarProducts = products.filter( product => product.brand === brand);
+    return (similarProducts.length ? similarProducts.slice(0, 4) : null); 
+}
+
+//pass state to props
 function mapStateToProps(state, ownProps) {
     const selectedProductSku = ownProps.match.params.id;
     const products = state.products.Products;
     let product = {};
+    let similarProducts = [];
 
-    if (selectedProductSku && products.length > 0) {
+    if (selectedProductSku && state.products.hasOwnProperty('Products')) {
         product = getProductBySku(products, selectedProductSku);
+        similarProducts = getSimilarProduct(products, product.brand);
     }
-    
+
     return {
         user: state.user,
-        product : product
+        product : product,
+        similarProducts : similarProducts
     };
 }
 
 function mapActionsToProps (dispatch) {
-
+    return {
+        UserAction : bindActionCreators(UserAction, dispatch)
+    };
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(ViewProduct);

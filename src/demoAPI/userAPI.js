@@ -72,6 +72,21 @@ class userApi {
         });
     }
 
+    static addToCart(userId, product) {
+        return new Promise((resolve, reject) => {
+            setTimeout(()=> {
+                const existingUserIndex = users.findIndex(user => user.id === userId);
+
+                if (existingUserIndex < 0) {
+                    reject ('User dose not exixt');
+                }
+
+                users[existingUserIndex].inCart.push(product);
+                resolve(users[existingUserIndex]);
+            },delay);
+        });
+    }
+
     // static deleteUser(userId) {
     //     return new Promise((resolve, reject) => {
     //       setTimeout(() => {
