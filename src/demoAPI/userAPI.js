@@ -81,8 +81,30 @@ class userApi {
                     reject ('User dose not exixt');
                 }
 
-                users[existingUserIndex].inCart.push(product);
-                resolve(users[existingUserIndex]);
+                const productIndex = users[existingUserIndex].inCart.findIndex(item => item.product.sku === product.product.sku);
+
+                if (productIndex >= 0) {
+                    users[existingUserIndex].inCart[productIndex].quantity = product.quantity;
+                    resolve(users[existingUserIndex].inCart);
+                } else {
+                    users[existingUserIndex].inCart.push(product);
+                    resolve(users[existingUserIndex].inCart);
+                }
+            },delay);
+        });
+    }
+
+    static deleteFromCart(userId, productSku) {
+        return new Promise((resolve, reject) => {
+            setTimeout(()=> {
+                const existingUserIndex = users.findIndex(user => user.id === userId);
+
+                if (existingUserIndex < 0) {
+                    reject ('User dose not exixt');
+                }
+                const newCart = users[existingUserIndex].inCart.filter(item => item.product.sku !== productSku);
+                users[existingUserIndex].inCart = newCart;
+                resolve(newCart);
             },delay);
         });
     }

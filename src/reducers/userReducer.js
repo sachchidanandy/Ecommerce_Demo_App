@@ -7,7 +7,10 @@ export default function userReducer (state = initialState.user, action) {
             return  action.user;
 
         case ActionType.ADD_TO_CART : 
-            return action.user;
+            return Object.assign({}, state, {inCart : action.cart});
+        
+        case ActionType.DELETE_PRODUCT : 
+            return Object.assign({}, state, {inCart : action.cart});
 
         default:
             return state;

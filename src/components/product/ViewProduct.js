@@ -6,7 +6,7 @@ import ProductDescription from './ProductDetails';
 import ProductList from '../common/ProductList';
 import { bindActionCreators } from 'redux';
 import * as UserAction from '../../actions/userAction';
-import toastr from'toastr';
+import toastr from 'toastr';
 
 class ViewProduct extends Component {
     constructor(props) {

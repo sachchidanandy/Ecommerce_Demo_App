@@ -3,15 +3,22 @@ import Headers from '../common/Header';
 import ProductSummary from '../common/ProductSummary';
 import { connect } from 'react-redux';
 import { Redirect, Link } from 'react-router-dom';
+import { bindActionCreators } from 'redux';
+import * as userAction from '../../actions/userAction';
+import toastr from 'toastr';
 
 class Cart extends Component {
     constructor (props) {
         super(props);
         this.state = { 
             isOpen : false,
-            quantity : 1,
             ApiCallInProgress : false,
-        }
+            cartItems : this.props.user.inCart
+        };
+
+        this.onQuantityChange = this.onQuantityChange.bind(this);
+        this.getSubTotal = this.getSubTotal.bind(this);
+        this.deleteItems = this.deleteItems.bind(this);
     }
 
     //Handle the toogle during mobile view
@@ -21,12 +28,34 @@ class Cart extends Component {
         }));
     }
 
+    onQuantityChange(event) {
+        if (event.target.value > 0) {
+            const cartItems = [...this.state.cartItems];
+            const cartIndex = cartItems.findIndex((item) => item.product.sku === event.target.name);
+            cartItems[cartIndex].quantity = event.target.value;
+            this.setState({cartItems : cartItems});
+        }
+    }
+
+    deleteItems(event) {
+        this.props.userAction.deleteFromCart(this.props.user.id, event.target.name)
+        .then (() => toastr.success('Product deleted from Cart'))
+        .catch((error) => toastr.error(error));
+    }
+
+    getSubTotal() {
+        const priceArray = this.state.cartItems.map(item => item.product.price * item.quantity);
+        return priceArray.reduce((total, price) => total + price, 0)
+    }
+
     render() {
         if (!this.props.user.hasOwnProperty('email')) {
-            return <Redirect to = '/'/>
+            return <Redirect to = '/'/>;
         }
 
-        const {cartItems, user} = this.props
+        const {user} = this.props;
+        const {cartItems} = this.state;
+        const subTotal = this.getSubTotal();
         return (
             <div className = 'container-fluid'>
                 <div className = 'container-fluid sticky'>
@@ -40,9 +69,12 @@ class Cart extends Component {
                     <h3 style = {{color : '#a73a00'}}>Shopping Cart</h3>
                     {   cartItems.length <= 0 ? <Link to = '/dashboard'><h4>Shop Now!!</h4></Link> 
                         : cartItems.map(
-                            item => <ProductSummary key = {item.product.sku} {...item.product} quantity = {item.quantity}/>
+                            item => <ProductSummary key = {item.product.sku} onQuantityChange = {this.onQuantityChange} {...item.product} deleteItems = {this.deleteItems}quantity = {item.quantity}/>
                         )
                     }
+                    <div >
+                        <h4 style = {{color : '#a73a00'}}> Sub Total : {subTotal}</h4>
+                    </div>
                 </div>
             </div>
         );
@@ -51,14 +83,13 @@ class Cart extends Component {
  
 function AddStateToProps (state) {
     return {
-        user : state.user,
-        cartItems : state.user.inCart
+        user : state.user
     };
 }
 
 function AddActionsToProps (dispatch) {
     return {
-
+        userAction : bindActionCreators(userAction, dispatch)
     };
 }
 
