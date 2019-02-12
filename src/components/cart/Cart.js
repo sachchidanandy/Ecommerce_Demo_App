@@ -45,7 +45,7 @@ class Cart extends Component {
 
     getSubTotal() {
         const priceArray = this.state.cartItems.map(item => item.product.price * item.quantity);
-        return priceArray.reduce((total, price) => total + price, 0)
+        return (priceArray.reduce((total, price) => total + price, 0)).toFixed(2);
     }
 
     render() {
@@ -72,8 +72,9 @@ class Cart extends Component {
                             item => <ProductSummary key = {item.product.sku} onQuantityChange = {this.onQuantityChange} {...item.product} deleteItems = {this.deleteItems}quantity = {item.quantity}/>
                         )
                     }
-                    <div >
-                        <h4 style = {{color : '#a73a00'}}> Sub Total : {subTotal}</h4>
+                    <div style = {{float : 'right', backgroundColor : '#f3f3f3', padding : '20px', borderRadius : '15px'}}>
+                        <h4 style = {{color : '#a73a00'}}> Subtotal ({cartItems.length} item) : Rs. {subTotal}</h4>
+                        <button style = {{backgroundColor : '#f0c859'}} disabled = {cartItems.length <= 0}>Proceed to Buy</button>
                     </div>
                 </div>
             </div>
