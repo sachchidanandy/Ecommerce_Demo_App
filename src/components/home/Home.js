@@ -36,18 +36,21 @@ class Home extends Component {
         this.toogle = this.toogle.bind(this);
     }
 
+    //Handle's change in the login form
     onLoginChangeForm(event) {
         const user = Object.assign({}, this.state.user);
         user[event.target.name] = event.target.value;
         this.setState({user : user});
     }
 
+    //Handle's change in the register form
     onRegisterChangeForm(event) {
         const registerUser = Object.assign({}, this.state.registerUser);
         registerUser[event.target.name] = event.target.value;
         this.setState({registerUser : registerUser});
     }
 
+    //Handle Login
     onLogin(event) {
         event.preventDefault();
         this.setState({loginInProcess : true});
@@ -66,6 +69,7 @@ class Home extends Component {
         });
     }
 
+    //Handle's User Registration
     onRegister(event) {
         event.preventDefault();
         this.setState({registrationInProcess : true});
@@ -87,6 +91,7 @@ class Home extends Component {
         });
     }
 
+    //Handles toogle
     toogle() {
         this.setState({showLogin : !this.state.showLogin});
     }

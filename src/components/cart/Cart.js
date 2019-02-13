@@ -28,6 +28,7 @@ class Cart extends Component {
         }));
     }
 
+    //Handle change in the quantity of product in cart
     onQuantityChange(event) {
         if (event.target.value > 0) {
             const cartItems = [...this.state.cartItems];
@@ -37,12 +38,14 @@ class Cart extends Component {
         }
     }
 
+    //Delete productts from cart
     deleteItems(event) {
         this.props.userAction.deleteFromCart(this.props.user.id, event.target.name)
         .then (() => toastr.success('Product deleted from Cart'))
         .catch((error) => toastr.error(error));
     }
 
+    //Calculate sub total of all products in cart
     getSubTotal() {
         const priceArray = this.state.cartItems.map(item => item.product.price * item.quantity);
         return (priceArray.reduce((total, price) => total + price, 0)).toFixed(2);

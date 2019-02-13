@@ -27,6 +27,7 @@ class DashBoard extends Component {
         this.onCollapse = this.onCollapse.bind(this);
         this.onChoosePage = this.onChoosePage.bind(this);
         this.onNextOrPrevPage = this.onNextOrPrevPage.bind(this);
+        this.getFilterProducts = this.getFilterProducts.bind(this);
     }
     
     //Handle the toogle during mobile view
@@ -59,20 +60,59 @@ class DashBoard extends Component {
         }
     }
 
+    //Handle the filter Change
     onFilterChange (event) {
+        const filterName = event.target.name + 'Filter';
+        const filterValue = event.target.value;
+        if (event.target.checked) {
+            this.setState( (prevState) => ({ [filterName] : [...prevState[filterName], filterValue ]}));
+        } else {
+            this.setState( (prevState) => ({ [filterName] : prevState[filterName].filter( filter => filter != filterValue) }));
+        }
+    }
 
+    //Logic to filter products
+    getFilterProducts(products) {
+        let filteredProducts = [];
+
+        if (this.state.brandFilter.length > 0) {
+            filteredProducts = [...filteredProducts, ...(products.filter( product => this.state.brandFilter.includes(product.brand)))];
+        } 
+        
+        if (this.state.packSizeFilter.length > 0) {
+            filteredProducts = [...filteredProducts, ...(products.filter( product => this.state.packSizeFilter.includes(product.packSize)))];
+        }
+        
+        if (this.state.flavourFilter.length > 0) {
+            filteredProducts = [...filteredProducts, ...(products.filter( product => this.state.flavourFilter.includes(product.flavour))) ];
+        }
+
+        return filteredProducts.length > 0 ? filteredProducts : products;
     }
 
     render() { 
         if (! this.props.user.hasOwnProperty('email') || !this.props.products.hasOwnProperty('Products')) {
             return <Redirect to='/' />;
         }
-        const {user, isOpen, filterList, productList, openFilter, currentPage, productPerPage } = this.state;
+        const {
+            user, 
+            isOpen, 
+            filterList, 
+            productList, 
+            openFilter, 
+            currentPage, 
+            productPerPage,
+        } = this.state;
+
+        //Logic to filter products
+        const finalProductList = this.getFilterProducts(productList);
+
         //Logic To show Products
         const indexOfLastProduct = currentPage * productPerPage;
         const indexOfFirstProduct = indexOfLastProduct - productPerPage;
-        const slicedProduct = productList.slice(indexOfFirstProduct, indexOfLastProduct);
-        const totalPage = Math.ceil(productList.length / productPerPage);
+        const slicedProduct = finalProductList.slice(indexOfFirstProduct, indexOfLastProduct);
+        const totalPage = Math.ceil(finalProductList.length / productPerPage);
+
         return (
             <div className = 'container-fluid'>
                 <div className = 'container-fluid sticky'>
