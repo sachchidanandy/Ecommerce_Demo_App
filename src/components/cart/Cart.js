@@ -27,6 +27,13 @@ class Cart extends Component {
           isOpen: !prevState.isOpen
         }));
     }
+    
+    //Life Cycle methos invoked immediately after updating occurs
+    componentDidUpdate(prevProps) {
+        if (this.props.user.inCart.length !== prevProps.user.inCart.length) {
+            this.setState({cartItems : this.props.user.inCart});
+        }
+    }
 
     //Handle change in the quantity of product in cart
     onQuantityChange(event) {
