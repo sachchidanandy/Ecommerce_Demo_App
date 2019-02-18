@@ -67,7 +67,7 @@ class DashBoard extends Component {
         if (event.target.checked) {
             this.setState( (prevState) => ({ [filterName] : [...prevState[filterName], filterValue ]}));
         } else {
-            this.setState( (prevState) => ({ [filterName] : prevState[filterName].filter( filter => filter != filterValue) }));
+            this.setState( (prevState) => ({ [filterName] : prevState[filterName].filter( filter => filter !== filterValue) }));
         }
     }
 

@@ -49,7 +49,7 @@ class ViewProduct extends Component {
     addToCart() {
         this.setState ({ApiCallInProgress : true});
 
-        this.props.UserAction.addToCart(this.props.user.id,
+        this.props.UserAction.addToCart(this.props.user.email,
             {product : this.props.product, quantity : this.state.quantity}
         ).then ( () => {
             toastr.success('Product Added To Cart');

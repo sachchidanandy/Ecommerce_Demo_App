@@ -119,7 +119,7 @@ class Home extends Component {
                     <div className = 'col-lg-4 Tablet align-self-center FormDiv'>
                         <div style ={{padding : 10}}>
                             <h3 style ={{padding : 10}}>Don't Have Account..?</h3>
-                            <h4 style ={{padding : 10}}>Create It Not !!</h4>
+                            <h4 style ={{padding : 10}}>Create It Now !..</h4>
                             <RegistrationForm
                                 user = {registerUser} 
                                 onChange = {this.onRegisterChangeForm} 

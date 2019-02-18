@@ -1,17 +1,5 @@
 import delay from './delay';
 
-const users = [
-    {
-      id: 'sachin@gmail.com',
-      email : 'sachin@gmail.com',
-      password : 'password',
-      firstName : 'Sachin',
-      middleName : '',
-      lastName : 'Yadav',
-      inCart : [],
-      ordered : []
-    }
-]
 
 //This would be performed on the server in a real app. Just stubbing in.
 const generateId = (user) => {
@@ -19,94 +7,92 @@ const generateId = (user) => {
 };
   
 class userApi {
+
     static login(user) {
-        return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            if (user.email) {
-                const existingUserIndex = users.findIndex(a => a.id === user.email);
-                if ( existingUserIndex >= 0) {
-                    users[existingUserIndex].password === user.password ? resolve(users[existingUserIndex]) : reject('Wrong Password');
-                } else {
-                    reject('email Id is not Registered');
-                }
+        return fetch(`http://localhost:3001/users?email=${user.email}&password=${user.password}`)
+        .then( response => response.json()).then (user => {
+            if (user.length) {
+                return user[0];
+            } else {
+                throw 'Invalid User Details';
             }
-            reject('Invalid Email Id');
-        }, delay);
+        }).catch ((error) => {
+            throw error;
         });
     }
 
     static saveUser(user) {
         user = Object.assign({}, user); // to avoid manipulating object passed in.
-        return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            // Simulate server-side validation
-            const minuserNameLength = 3;
-            if (user.firstName.length < minuserNameLength) {
-            reject(`First Name must be at least ${minuserNameLength} characters.`);
-            }
-
-            if (user.lastName.length < minuserNameLength) {
-            reject(`Last Name must be at least ${minuserNameLength} characters.`);
-            }
-
-            if (user.email.length < minuserNameLength) {
-                reject(`Email must be at least ${minuserNameLength} characters.`);
-            }
-            
-            const existingUserIndex = users.findIndex(a => a.id === user.email.toLowerCase());
-
-            if (existingUserIndex >= 0) {
-                reject('Email Id Already Registered');
+        
+        return fetch(`http://localhost:3001/users?email=${user.email}`)
+        .then( response => response.json())
+        .then (fetchedUsers => {
+            if (fetchedUsers.length) {
+                throw('Email Id Already Registered');
             } else {
-            //Just simulating creatin here.
-            //The server would generate ids for new users in a real app.
-            //Cloning so copy returned is passed by value rather than by reference.
-            user.id = generateId(user);
             user.inCart = [];
             user.ordered = [];
-            users.push(user);
+            return user
             }
-
-            resolve(user);
-        }, delay);
-        });
+        }).then(user => {
+            return fetch('http://localhost:3001/users',{
+            method : 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body : JSON.stringify(user)});
+        }).then( response => response.json())
+        .then(user => user).catch(err => {throw err});
     }
 
     static addToCart(userId, product) {
-        return new Promise((resolve, reject) => {
-            setTimeout(()=> {
-                const existingUserIndex = users.findIndex(user => user.id === userId);
-
-                if (existingUserIndex < 0) {
-                    reject ('User dose not exixt');
-                }
-
-                const productIndex = users[existingUserIndex].inCart.findIndex(item => item.product.sku === product.product.sku);
-
-                if (productIndex >= 0) {
-                    users[existingUserIndex].inCart[productIndex].quantity = product.quantity;
-                    resolve(users[existingUserIndex].inCart);
-                } else {
-                    users[existingUserIndex].inCart.push(product);
-                    resolve(users[existingUserIndex].inCart);
-                }
-            },delay);
-        });
+        return fetch(`http://localhost:3001/users?email=${userId}`)
+        .then( response => response.json())
+        .then (user => {
+            if (!user.length) {
+                throw('User Does Not Exist');
+            }
+            user = user[0];
+            const productIndex = user.inCart.findIndex(item => item.product.sku === product.product.sku);
+            if (productIndex >= 0) {
+                user.inCart[productIndex].quantity = product.quantity;
+            } else {
+                user.inCart.push(product);
+            }
+            return user;
+        }).then(user => {
+            return fetch(`http://localhost:3001/users/${user.id}`,{
+            method : 'PUT',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body : JSON.stringify(user)});
+        }).then(response => response.json())
+        .then(user => {
+            return  user.inCart;
+        }).catch(err => {throw err});
     }
 
-    static deleteFromCart(userId, productSku) {
-        return new Promise((resolve, reject) => {
-            setTimeout(()=> {
-                const existingUserIndex = users.findIndex(user => user.id === userId);
-
-                if (existingUserIndex < 0) {
-                    reject ('User dose not exixt');
-                }
-                const newCart = users[existingUserIndex].inCart.filter(item => item.product.sku !== productSku);
-                users[existingUserIndex].inCart = newCart;
-                resolve(newCart);
-            },delay);
-        });
+    static deleteFromCart(email, productSku) {
+        return fetch(`http://localhost:3001/users?email=${email}`)
+        .then( response => response.json())
+        .then (user => {
+            if (!user.length) {
+                throw('User Does Not Exist');
+            }
+            user = user[0];
+            const newCart = user.inCart.filter(item => item.product.sku !== productSku);
+            user.inCart = newCart;
+            return user;
+        }).then(user => {
+            return fetch(`http://localhost:3001/users/${user.id}`,{
+            method : 'PUT',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body : JSON.stringify(user)});
+        }).then(response => response.json())
+        .then(user => user.inCart).catch(err => {throw err});
     }
 
     // static deleteUser(userId) {

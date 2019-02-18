@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 
 const ProductSummary = ({deleteItems, sku, name, brand, flavour, packSize, offerIDs, price, thumbnailURL, quantity, onQuantityChange}) => {
     return (

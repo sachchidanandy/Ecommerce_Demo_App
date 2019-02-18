@@ -47,7 +47,7 @@ class Cart extends Component {
 
     //Delete productts from cart
     deleteItems(event) {
-        this.props.userAction.deleteFromCart(this.props.user.id, event.target.name)
+        this.props.userAction.deleteFromCart(this.props.user.email, event.target.name)
         .then (() => toastr.success('Product deleted from Cart'))
         .catch((error) => toastr.error(error));
     }
