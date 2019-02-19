@@ -5,23 +5,25 @@ import ProductList from '../common/ProductList';
 import PaginationBar from '../common/PaginationBar';
 import Filter from './Filter';
 import  { Redirect } from 'react-router-dom';
+import * as productAction from '../../actions/productsAction';
+import { bindActionCreators } from 'redux';
 
 class DashBoard extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            user : props.user,
             openFilter : {brand : false, flavour : false, packSize : false },
             isOpen : false,
             brandFilter : [],
             flavourFilter : [],
             packSizeFilter : [],
-            productList : props.products.Products,
-            filterList : props.products.FilterList,
+            productList : [],
+            filterList : [],
             currentPage : 1,
             productPerPage : 9
         };
+
         this.onToggle = this.onToggle.bind(this);
         this.onFilterChange = this.onFilterChange.bind(this);
         this.onCollapse = this.onCollapse.bind(this);
@@ -30,6 +32,18 @@ class DashBoard extends Component {
         this.getFilterProducts = this.getFilterProducts.bind(this);
     }
     
+    //Life Cycle methos invoked immediately after mount occurs
+    componentDidMount() {
+        this.props.productActions.fetchProducts().then(() => {
+            this.setState({
+                productList : this.props.products.Products,
+                filterList : this.props.products.FilterList
+            });
+        }).catch(err => {
+            throw err;
+        });
+    }
+
     //Handle the toogle during mobile view
     onToggle() {
         this.setState({
@@ -91,11 +105,12 @@ class DashBoard extends Component {
     }
 
     render() { 
-        if (! this.props.user.hasOwnProperty('email') || !this.props.products.hasOwnProperty('Products')) {
+        if (! localStorage.hasOwnProperty('user')) {
             return <Redirect to='/' />;
         }
+
+        const user = this.props.user;
         const {
-            user, 
             isOpen, 
             filterList, 
             productList, 
@@ -103,6 +118,10 @@ class DashBoard extends Component {
             currentPage, 
             productPerPage,
         } = this.state;
+
+        if (! productList.length) {
+            return null;
+        }
 
         //Logic to filter products
         const finalProductList = this.getFilterProducts(productList);
@@ -148,4 +167,11 @@ function mapStateToProps(state) {
         products : state.products
     };
 }
-export default connect(mapStateToProps)(DashBoard);
+
+function mapActionsToProps (dispatch) {
+    return {
+        productActions : bindActionCreators(productAction, dispatch)
+    };
+}
+
+export default connect(mapStateToProps, mapActionsToProps)(DashBoard);

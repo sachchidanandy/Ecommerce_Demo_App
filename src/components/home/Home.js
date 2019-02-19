@@ -8,7 +8,7 @@ import LoginForm from './LoginForm';
 import RegistrationForm from './Registration';
 import { Input } from 'reactstrap';
 import  { Redirect } from 'react-router-dom';
-import toastr from'toastr';
+import toastr from 'toastr';
 
 class Home extends Component {
     constructor (props) {
@@ -55,7 +55,7 @@ class Home extends Component {
         event.preventDefault();
         this.setState({loginInProcess : true});
         this.props.userActions.loginUser(this.state.user)
-        .then (() => this.props.productActions.fetchProducts())
+        .then (() => localStorage.setItem('user', JSON.stringify(this.state.user.email)))
         .then (() => this.props.history.push('/dashboard'))
         .catch(error => {
             toastr.error(error);
@@ -74,7 +74,7 @@ class Home extends Component {
         event.preventDefault();
         this.setState({registrationInProcess : true});
         this.props.userActions.registerUser(this.state.registerUser)
-        .then (() => this.props.productActions.fetchProducts())
+        .then (() => localStorage.setItem('user', JSON.stringify(this.state.user.email)))
         .then (() => this.props.history.push('/dashboard'))
         .catch(error => {
             toastr.error(error);
@@ -97,7 +97,7 @@ class Home extends Component {
     }
 
     render() {
-        if (this.props.user.hasOwnProperty('email') && this.props.products.hasOwnProperty('Products')) {
+        if (localStorage.hasOwnProperty('user')) {
             return <Redirect to = '/dashboard'/>;
         }
         const {user, registrationInProcess, showLogin, registerUser, loginInProcess } = this.state;

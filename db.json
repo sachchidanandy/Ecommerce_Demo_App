@@ -10,31 +10,6 @@
       "inCart": [
         {
           "product": {
-            "sku": "106787",
-            "name": "Schwep Soda slab 12's Clear 320ml HCS",
-            "price": "10.10",
-            "rrpCasePrice": "10.10",
-            "imageURLLarge": "http://www.coca-cola.ie/content/dam/journey/gb/en/hidden/Products/lead-brand-image/coca-cola-original-taste-gb-lead-598x336.jpg",
-            "thumbnailURL": "http://www.coca-cola.ie/content/dam/journey/gb/en/hidden/Products/lead-brand-image/coca-cola-original-taste-gb-lead-598x336.jpg",
-            "description": "Schwep Soda slab 12's Clear 320ml HCS",
-            "pack": " 12s",
-            "brand": "Schweppes",
-            "displayPriority": null,
-            "brandLogo": "http://sgdev.rdnsing.com/uploads/ko/Schweppes.jpeg",
-            "flavour": "Soda Water",
-            "packType": "CAN SLAB (SLEEK CAN)",
-            "packSize": "320ML",
-            "packSizeValue": 320,
-            "rcpCasePrice": "0",
-            "countFlag": false,
-            "isTaxable": true,
-            "isCupRule": true,
-            "offerIDs": ""
-          },
-          "quantity": 1
-        },
-        {
-          "product": {
             "sku": "106755",
             "name": "Schwep Ginger Ale slab 12's Clear 320ml",
             "price": "10.10",

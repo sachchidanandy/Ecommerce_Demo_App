@@ -7,7 +7,18 @@ const generateId = (user) => {
 };
   
 class userApi {
-
+    static fetchUser(email) {
+        return fetch(`http://localhost:3001/users?email=${email}`)
+        .then( response => response.json()).then (user => {
+            if (user.length) {
+                return user[0];
+            } else {
+                throw 'Invalid User Details';
+            }
+        }).catch ((error) => {
+            throw error;
+        });
+    }
     static login(user) {
         return fetch(`http://localhost:3001/users?email=${user.email}&password=${user.password}`)
         .then( response => response.json()).then (user => {

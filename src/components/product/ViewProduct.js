@@ -64,6 +64,7 @@ class ViewProduct extends Component {
         if (!this.props.user.hasOwnProperty('email')) {
             return <Redirect to='/' />;
         }
+        
         const {user, product, similarProducts} = this.props;
         const {isOpen, quantity, ApiCallInProgress} = this.state;
         return (

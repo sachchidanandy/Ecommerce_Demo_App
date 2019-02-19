@@ -17,6 +17,15 @@ function deleteProductSuccess(cart) {
     return {type : ActionType.DELETE_PRODUCT, cart}
 }
 
+export function fetchUser(email) {
+    return function (dispatch) {
+        return UserAPI.fetchUser(email).then (user => {
+            dispatch(loginUserSuccess(user));
+        }).catch ((error) => {
+            throw error;
+        }); 
+    }
+}
 export function loginUser(user) {
     return function (dispatch) {
         return UserAPI.login(user).then (user => {
