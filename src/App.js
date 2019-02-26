@@ -8,11 +8,6 @@ import {Redirect} from 'react-router-dom';
 
 const store = configureStore();
 
-if (localStorage.hasOwnProperty('user')) {
-    const email = JSON.parse(localStorage.getItem('user'));
-    store.dispatch(fetchUser(email)).catch(() => <Redirect to = '/'/>);
-}
-
 export default class App extends Component {
     render () {
         return (

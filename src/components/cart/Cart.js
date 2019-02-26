@@ -1,4 +1,4 @@
-import React, {Component} from 'react'; 
+import React, {Component} from 'react';
 import Headers from '../common/Header';
 import ProductSummary from '../common/ProductSummary';
 import { connect } from 'react-redux';
@@ -23,6 +23,7 @@ class Cart extends Component {
         this.deleteItems = this.deleteItems.bind(this);
         this.getTotalItems = this.getTotalItems.bind(this);
         this.getTax = this.getTax.bind(this);
+        this.buyProducts = this.buyProducts.bind(this);
     }
 
     //Handle the toogle during mobile view
@@ -73,6 +74,12 @@ class Cart extends Component {
         return ((GST_PER * subTotal)/100).toFixed(2) ;
     }
 
+    //Buy Now 
+    buyProducts(event){
+        this.props.userAction.buyProducts(this.props.user.email, this.state.cartItems)
+        .then (() => this.props.history.push('/checkout')).catch (error => toastr.error(error));
+    }
+
     render() {
         if (!this.props.user.hasOwnProperty('email')) {
             return <Redirect to = '/'/>;
@@ -102,7 +109,7 @@ class Cart extends Component {
                             )}
                         </div>
                         <div className = 'col-3'>
-                            <TotalCost totalItems = {totalItems} subTotal = {subTotal} GST_PER = {GST_PER} tax = {tax}/>
+                            <TotalCost totalItems = {totalItems} subTotal = {subTotal} GST_PER = {GST_PER} tax = {tax} buyNow = {this.buyProducts}/>
                         </div>
                     </div>
                     }
@@ -112,16 +119,16 @@ class Cart extends Component {
     }
 }
  
-function AddStateToProps (state) {
+function addStateToProps (state) {
     return {
         user : state.user
     };
 }
 
-function AddActionsToProps (dispatch) {
+function addActionsToProps (dispatch) {
     return {
         userAction : bindActionCreators(userAction, dispatch)
     };
 }
 
-export default connect(AddStateToProps, AddActionsToProps)(Cart);
+export default connect(addStateToProps, addActionsToProps)(Cart);

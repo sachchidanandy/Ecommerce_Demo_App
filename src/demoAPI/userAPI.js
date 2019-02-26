@@ -4,6 +4,8 @@ class userApi {
         return fetch(`http://localhost:3001/users?email=${email}`)
         .then( response => response.json()).then (user => {
             if (user.length) {
+                delete user[0].password;
+                delete user[0].ordered;
                 return user[0];
             } else {
                 throw 'Invalid User Details';
@@ -16,6 +18,8 @@ class userApi {
         return fetch(`http://localhost:3001/users?email=${user.email}&password=${user.password}`)
         .then( response => response.json()).then (user => {
             if (user.length) {
+                delete user[0].password;
+                delete user[0].ordered;
                 return user[0];
             } else {
                 throw 'Invalid User Details';
@@ -36,6 +40,7 @@ class userApi {
             } else {
             user.inCart = [];
             user.ordered = [];
+            user.lastOrder = [];
             return user
             }
         }).then(user => {
@@ -82,7 +87,7 @@ class userApi {
         .then( response => response.json())
         .then (user => {
             if (!user.length) {
-                throw {code : 3004, message : 'User Does Not Exist'};
+                throw 'User Does Not Exist';
             }
             user = user[0];
             const newCart = user.inCart.filter(item => item.product.sku !== productSku);
@@ -97,6 +102,29 @@ class userApi {
             body : JSON.stringify(user)});
         }).then(response => response.json())
         .then(user => user.inCart).catch(err => {throw err});
+    }
+
+    static buyProducts(email, inCartProducts) {
+        return fetch(`http://localhost:3001/users?email=${email}`)
+        .then ( response => response.json())
+        .then ( user => {
+            if (!user.length) {
+                throw 'User Does Not Exist';
+            }
+            user = user[0];
+            user.inCart = [];
+            user.ordered = [...user.ordered, ...inCartProducts];
+            user.lastOrder = [...inCartProducts];
+            return user;
+        }).then (user => {
+            return fetch (`http://localhost:3001/users/${user.id}`, {
+            method : 'PUT',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body : JSON.stringify(user)});
+        }).then(response => response.json())
+        .then(user => user.lastOrder).catch(err => {throw err});
     }
 }
 

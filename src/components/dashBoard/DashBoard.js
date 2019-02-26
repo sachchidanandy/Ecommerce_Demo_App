@@ -6,6 +6,7 @@ import PaginationBar from '../common/PaginationBar';
 import Filter from './Filter';
 import  { Redirect } from 'react-router-dom';
 import * as productAction from '../../actions/productsAction';
+import * as userAction from '../../actions/userAction';
 import { bindActionCreators } from 'redux';
 
 class DashBoard extends Component {
@@ -34,7 +35,10 @@ class DashBoard extends Component {
     
     //Life Cycle methos invoked immediately after mount occurs
     componentDidMount() {
-        this.props.productActions.fetchProducts().then(() => {
+        const email = JSON.parse(localStorage.getItem('user'));
+        this.props.userActions.fetchUser(email).then (() => {
+            return this.props.productActions.fetchProducts();
+        }).then(() => {
             this.setState({
                 productList : this.props.products.Products,
                 filterList : this.props.products.FilterList
@@ -162,6 +166,7 @@ class DashBoard extends Component {
 }
  
 function mapStateToProps(state) {
+    debugger;
     return {
         user: state.user,
         products : state.products
@@ -170,6 +175,7 @@ function mapStateToProps(state) {
 
 function mapActionsToProps (dispatch) {
     return {
+        userActions : bindActionCreators(userAction, dispatch),
         productActions : bindActionCreators(productAction, dispatch)
     };
 }

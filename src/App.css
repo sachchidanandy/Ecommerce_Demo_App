@@ -48,6 +48,12 @@ html, body {
   height: 80vh;
 }
 
+.scroll-table {
+  flex: 1;
+  overflow-y: scroll;
+  height: 70vh;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

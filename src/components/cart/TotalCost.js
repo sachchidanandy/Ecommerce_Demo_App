@@ -1,6 +1,6 @@
 import React from 'react';
 
-const TotalCost = ({totalItems, subTotal, GST_PER, tax}) => {
+const TotalCost = ({totalItems, subTotal, GST_PER, tax, buyNow}) => {
     return (
         <div style = {{backgroundColor : '#f3f3f3', padding : '20px', borderRadius : '15px'}}>
             <table>
@@ -29,7 +29,7 @@ const TotalCost = ({totalItems, subTotal, GST_PER, tax}) => {
                     </tr>
                 </tbody>
             </table>                                     
-            <button style = {{backgroundColor : '#f0c859'}}>Proceed to Buy</button>
+            <button style = {{backgroundColor : '#f0c859'}} onClick = {buyNow}>Buy Now</button>
         </div>
     );
 }

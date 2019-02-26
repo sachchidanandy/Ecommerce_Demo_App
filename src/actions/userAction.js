@@ -17,6 +17,10 @@ function deleteProductSuccess(cart) {
     return {type : ActionType.DELETE_PRODUCT, cart}
 }
 
+function buyProductsSuccess(lastOrder) {
+    return {type : ActionType.BUY_PRODUCT, lastOrder}
+}
+
 export function fetchUser(email) {
     return function (dispatch) {
         return UserAPI.fetchUser(email).then (user => {
@@ -61,6 +65,16 @@ export function deleteFromCart (userID, productSku) {
         return UserAPI.deleteFromCart(userID, productSku).then (cart => {
             dispatch(deleteProductSuccess(cart));
         }).catch ((error) => {
+            throw error;
+        })
+    }
+}
+
+export function buyProducts(userID, inCartProducts) {
+    return function (dispatch) {
+        return UserAPI.buyProducts(userID, inCartProducts).then ( lastOrder => {
+            dispatch(buyProductsSuccess(lastOrder));
+        }).catch (error => {
             throw error;
         })
     }
