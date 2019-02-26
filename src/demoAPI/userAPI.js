@@ -1,11 +1,4 @@
-import delay from './delay';
-
-
-//This would be performed on the server in a real app. Just stubbing in.
-const generateId = (user) => {
-    return user.email.toLowerCase();
-};
-  
+ 
 class userApi {
     static fetchUser(email) {
         return fetch(`http://localhost:3001/users?email=${email}`)
@@ -89,7 +82,7 @@ class userApi {
         .then( response => response.json())
         .then (user => {
             if (!user.length) {
-                throw('User Does Not Exist');
+                throw {code : 3004, message : 'User Does Not Exist'};
             }
             user = user[0];
             const newCart = user.inCart.filter(item => item.product.sku !== productSku);
@@ -105,18 +98,6 @@ class userApi {
         }).then(response => response.json())
         .then(user => user.inCart).catch(err => {throw err});
     }
-
-    // static deleteUser(userId) {
-    //     return new Promise((resolve, reject) => {
-    //       setTimeout(() => {
-    //         const indexOfUserToDelete = users.findIndex(user => {
-    //           user.id == userId;
-    //         });
-    //         users.splice(indexOfUserToDelete, 1);
-    //         resolve();
-    //       }, delay);
-    //     });
-    // }
 }
 
 export default userApi;

@@ -12,7 +12,7 @@ const ProductSummary = ({deleteItems, sku, name, brand, flavour, packSize, offer
                     <li> by {brand}</li>
                     <li>{flavour}</li>
                     <li>{packSize}</li>
-                    <li style = {{color : '#a73a00'}}>{offerIDs.length} offers</li>
+                    {offerIDs.length > 0 ? <li style = {{color : '#a73a00'}}>{offerIDs.length} offers</li> : ''}
                 </ul>
             </div>
             <div className = 'col-sm-4'>
@@ -21,7 +21,7 @@ const ProductSummary = ({deleteItems, sku, name, brand, flavour, packSize, offer
                     <li><h6>Quantity</h6></li>
                     <li>
                         <input type = 'number' value = {quantity} name = {sku} onChange = {onQuantityChange}/>
-                     </li>
+                    </li>
                     <li style = {{color : '#1870c7', alignSelf : 'flex-end', marginTop : '15px'}}>
                         <button type="button" className="btn btn-link" name = {sku} onClick = {deleteItems}>Delete</button> |  
                         <button type="button" className="btn btn-link">Save for later</button>

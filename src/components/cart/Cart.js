@@ -6,6 +6,8 @@ import { Redirect, Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import * as userAction from '../../actions/userAction';
 import toastr from 'toastr';
+import {GST_PER} from '../../constants/AppConstants';
+import TotalCost from './TotalCost';
 
 class Cart extends Component {
     constructor (props) {
@@ -19,6 +21,8 @@ class Cart extends Component {
         this.onQuantityChange = this.onQuantityChange.bind(this);
         this.getSubTotal = this.getSubTotal.bind(this);
         this.deleteItems = this.deleteItems.bind(this);
+        this.getTotalItems = this.getTotalItems.bind(this);
+        this.getTax = this.getTax.bind(this);
     }
 
     //Handle the toogle during mobile view
@@ -53,9 +57,20 @@ class Cart extends Component {
     }
 
     //Calculate sub total of all products in cart
-    getSubTotal() {
-        const priceArray = this.state.cartItems.map(item => item.product.price * item.quantity);
+    getSubTotal(cartItems) {
+        const priceArray = cartItems.map(item => Number(item.product.price * item.quantity));
         return (priceArray.reduce((total, price) => total + price, 0)).toFixed(2);
+    }
+
+    //Calculate total items
+    getTotalItems(cartItems) {
+        const quantityArray = cartItems.map(item => Number(item.quantity));
+        return quantityArray.reduce((total, price) => total + price, 0);
+    }
+
+    //Calculate Tax
+    getTax(subTotal) {
+        return ((GST_PER * subTotal)/100).toFixed(2) ;
     }
 
     render() {
@@ -65,7 +80,9 @@ class Cart extends Component {
 
         const {user} = this.props;
         const {cartItems} = this.state;
-        const subTotal = this.getSubTotal();
+        const subTotal = Number(this.getSubTotal(cartItems));
+        const totalItems = Number(this.getTotalItems(cartItems));
+        const tax = Number(this.getTax(subTotal));
         return (
             <div className = 'container-fluid'>
                 <div className = 'container-fluid sticky'>
@@ -77,15 +94,18 @@ class Cart extends Component {
                 </div>
                 <div className = 'container-fluid relative'>
                     <h3 style = {{color : '#a73a00'}}>Shopping Cart</h3>
-                    {   cartItems.length <= 0 ? <Link to = '/dashboard'><h4>Shop Now!!</h4></Link> 
-                        : cartItems.map(
-                            item => <ProductSummary key = {item.product.sku} onQuantityChange = {this.onQuantityChange} {...item.product} deleteItems = {this.deleteItems}quantity = {item.quantity}/>
-                        )
-                    }
-                    <div style = {{float : 'right', backgroundColor : '#f3f3f3', padding : '20px', borderRadius : '15px'}}>
-                        <h4 style = {{color : '#a73a00'}}> Subtotal ({cartItems.length} item) : Rs. {subTotal}</h4>
-                        <button style = {{backgroundColor : '#f0c859'}} disabled = {cartItems.length <= 0}>Proceed to Buy</button>
+                    {cartItems.length <= 0 ? <Link to = '/dashboard'><h4>Shop Now!!</h4></Link> 
+                    :<div className = 'row'> 
+                        <div className = 'scroll-container col-9'>
+                            { cartItems.map(
+                                item => <ProductSummary key = {item.product.sku} onQuantityChange = {this.onQuantityChange} {...item.product} deleteItems = {this.deleteItems}quantity = {item.quantity}/>
+                            )}
+                        </div>
+                        <div className = 'col-3'>
+                            <TotalCost totalItems = {totalItems} subTotal = {subTotal} GST_PER = {GST_PER} tax = {tax}/>
+                        </div>
                     </div>
+                    }
                 </div>
             </div>
         );
