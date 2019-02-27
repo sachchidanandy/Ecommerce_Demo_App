@@ -4,7 +4,10 @@ import { Table } from 'reactstrap';
 
 const OrderDetail = ({lastOrder, subTotal, tax, GST_PER}) => {
     return(
-        <div className = 'scroll-table'>
+        <div id = 'billToSave' style = {{ width: '210mm',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        padding : '20px'}}>
             <Table responsive hover striped>
                 <thead style = {{backgroundColor : '#f6fcff'}}>
                     <tr>

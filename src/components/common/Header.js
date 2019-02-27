@@ -3,7 +3,6 @@ import BeforeLoginNav from './navbar/BeforeLogin';
 import AfterLoginNav from './navbar/AfterLogin';
 
 const Header  = ({ validUser, onFormChange, user, apiCallInProcess, login, toggle, isOpen })  => {
-    debugger;
     return (
         localStorage.hasOwnProperty('user') ? <AfterLoginNav
         toggle = {toggle}
