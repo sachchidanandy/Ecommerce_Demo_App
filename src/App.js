@@ -3,8 +3,6 @@ import AppRoutes from './Routes';
 import { Provider } from 'react-redux';
 import configureStore from './store/configureStore';
 import './App.css';
-import {fetchUser} from './actions/userAction';
-import {Redirect} from 'react-router-dom';
 
 const store = configureStore();
 
